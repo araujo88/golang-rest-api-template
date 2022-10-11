@@ -26,7 +26,7 @@ func CreateBook(c *gin.Context) {
 
 	models.DB.Create(&book)
 
-	c.JSON(http.StatusOK, gin.H{"data": book})
+	c.JSON(http.StatusCreated, gin.H{"data": book})
 }
 
 func FindBook(c *gin.Context) {
