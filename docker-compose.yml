@@ -1,0 +1,33 @@
+version: '1.0'
+services:
+  backend:
+    container_name: go-rest-api-template
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8001:8001
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      POSTGRES_DB: go_app_dev
+      POSTGRES_HOST: dockerPostgres
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: password
+      POSTGRES_PORT: 5435
+
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    container_name: dockerPostgres
+    volumes:
+      - .dbdata:/var/lib/postgres
+    ports:
+      - '5435:5435'
+    environment:
+      - POSTGRES_DB=go_app_dev
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=password
+    command: -p 5435
