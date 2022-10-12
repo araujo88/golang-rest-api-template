@@ -4,8 +4,9 @@ import (
 	"golang-rest-api-template/controllers"
 	"golang-rest-api-template/models"
 
+	docs "golang-rest-api-template/docs"
+
 	"github.com/gin-gonic/gin"
-	docs "github.com/golang-rest-api-template/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -20,7 +21,7 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
-		v1.GET("/", controllers.Helloworld)
+		v1.GET("/helloworld", controllers.Helloworld)
 		v1.GET("/books", controllers.FindBooks)
 		v1.POST("/books", controllers.CreateBook)
 		v1.GET("/books/:id", controllers.FindBook)

@@ -1,4 +1,91 @@
 info:
   contact: {}
-paths: {}
+paths:
+  /book/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete book entry by id
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+      summary: delete book
+      tags:
+      - books
+    get:
+      consumes:
+      - application/json
+      description: find book entry by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: find book
+      tags:
+      - books
+    put:
+      consumes:
+      - application/json
+      description: update book entry by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: update book
+      tags:
+      - books
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: fetch all books data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: find books
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: create book entry with title and author
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      summary: create book
+      tags:
+      - books
+  /helloworld:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping example
+      tags:
+      - example
 swagger: "2.0"

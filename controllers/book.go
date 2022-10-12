@@ -17,11 +17,20 @@ import (
 // @Accept json
 // @Produce json
 // @Success 200 {string} Helloworld
-// @Router /example/helloworld [get]
+// @Router /helloworld [get]
 func Helloworld(g *gin.Context) {
 	g.JSON(http.StatusOK, "helloworld")
 }
 
+// FindBooks godoc
+// @Summary find books
+// @Schemes
+// @Description fetch all books data
+// @Tags books
+// @Accept json
+// @Produce json
+// @Success 200 {string} book data
+// @Router /books [get]
 func FindBooks(c *gin.Context) {
 	var books []models.Book
 	models.DB.Find(&books)
@@ -29,6 +38,15 @@ func FindBooks(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": books})
 }
 
+// CreateBook godoc
+// @Summary create book
+// @Schemes
+// @Description create book entry with title and author
+// @Tags books
+// @Accept json
+// @Produce json
+// @Success 201 {string} book data
+// @Router /books [post]
 func CreateBook(c *gin.Context) {
 	var input models.CreateBook
 
@@ -44,6 +62,15 @@ func CreateBook(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": book})
 }
 
+// FindBook godoc
+// @Summary find book
+// @Schemes
+// @Description find book entry by id
+// @Tags books
+// @Accept json
+// @Produce json
+// @Success 200 {string} book data
+// @Router /book/{id} [get]
 func FindBook(c *gin.Context) {
 	var book models.Book
 
@@ -55,6 +82,15 @@ func FindBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
+// UpdateBook godoc
+// @Summary update book
+// @Schemes
+// @Description update book entry by id
+// @Tags books
+// @Accept json
+// @Produce json
+// @Success 200 {string} book data
+// @Router /book/{id} [put]
 func UpdateBook(c *gin.Context) {
 	var book models.Book
 	var input models.UpdateBook
@@ -74,6 +110,15 @@ func UpdateBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
+// DeleteBook godoc
+// @Summary delete book
+// @Schemes
+// @Description delete book entry by id
+// @Tags books
+// @Accept json
+// @Produce json
+// @Success 204 {string} empty content
+// @Router /book/{id} [delete]
 func DeleteBook(c *gin.Context) {
 	var book models.Book
 
