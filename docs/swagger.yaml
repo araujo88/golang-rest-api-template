@@ -1,7 +1,36 @@
 info:
   contact: {}
 paths:
-  /book/{id}:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: fetch all books data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: find books
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: create book entry with title and author
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      summary: create book
+      tags:
+      - books
+  /books/{id}:
     delete:
       consumes:
       - application/json
@@ -42,35 +71,6 @@ paths:
           schema:
             type: string
       summary: update book
-      tags:
-      - books
-  /books:
-    get:
-      consumes:
-      - application/json
-      description: fetch all books data
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: find books
-      tags:
-      - books
-    post:
-      consumes:
-      - application/json
-      description: create book entry with title and author
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            type: string
-      summary: create book
       tags:
       - books
   /helloworld:

@@ -70,7 +70,7 @@ func CreateBook(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {string} book data
-// @Router /book/{id} [get]
+// @Router /books/{id} [get]
 func FindBook(c *gin.Context) {
 	var book models.Book
 
@@ -90,7 +90,7 @@ func FindBook(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {string} book data
-// @Router /book/{id} [put]
+// @Router /books/{id} [put]
 func UpdateBook(c *gin.Context) {
 	var book models.Book
 	var input models.UpdateBook
@@ -118,7 +118,7 @@ func UpdateBook(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 204 {string} empty content
-// @Router /book/{id} [delete]
+// @Router /books/{id} [delete]
 func DeleteBook(c *gin.Context) {
 	var book models.Book
 
