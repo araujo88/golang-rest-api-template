@@ -31,19 +31,19 @@ func main() {
 		TestFail()
 	}
 
-	if TestGetRequest(baseURL+"/books/4") == http.StatusOK {
+	if TestGetRequest(baseURL+"/books/1") == http.StatusOK {
 		TestOK()
 	} else {
 		TestFail()
 	}
 
-	if TestPutRequest(baseURL+"/books/4", book_update) == http.StatusOK {
+	if TestPutRequest(baseURL+"/books/1", book_update) == http.StatusOK {
 		TestOK()
 	} else {
 		TestFail()
 	}
 
-	if TestDeleteRequest(baseURL+"/books/8") == http.StatusNoContent {
+	if TestDeleteRequest(baseURL+"/books/1") == http.StatusNoContent {
 		TestOK()
 	} else {
 		TestFail()
