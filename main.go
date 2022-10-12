@@ -6,6 +6,9 @@ import (
 
 	docs "golang-rest-api-template/docs"
 
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -30,5 +33,20 @@ func main() {
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://127.0.0.1",
+			"http://127.0.0.1:8001",
+			"http://localhost",
+			"http://localhost:8001"},
+		AllowMethods: []string{"*"},
+		AllowHeaders: []string{"*"},
+		//ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		//AllowOriginFunc: func(origin string) bool {
+		//	return origin == "https://github.com"
+		//},
+		MaxAge: 12 * time.Hour,
+	}))
 	r.Run(":8001")
 }
