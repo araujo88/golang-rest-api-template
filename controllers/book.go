@@ -42,7 +42,7 @@ func FindBook(c *gin.Context) {
 
 func UpdateBook(c *gin.Context) {
 	var book models.Book
-	var input models.Book
+	var input models.UpdateBook
 
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "book not found"})
