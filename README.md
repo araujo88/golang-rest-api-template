@@ -20,6 +20,12 @@ Endpoints:
  - PUT /books/id
  - DELETE /books/id
 
+ ## Middleware
+
+  - security
+  - CORS headers
+  - XSS sanitizer
+
  ## Swagger
 
  ![screenshot](screenshot.png)

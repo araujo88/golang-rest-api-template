@@ -9,6 +9,7 @@ import (
 
 	"time"
 
+	xss "github.com/araujo88/gin-gonic-xss-middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/secure"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,10 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
+
+	// include as standard middleware
+	var xssMdlwr xss.XssMw
+	r.Use(xssMdlwr.RemoveXss())
 
 	if gin.Mode() == gin.ReleaseMode {
 		r.Use(secure.New(secure.Config{
