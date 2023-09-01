@@ -32,3 +32,9 @@ services:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=password
     command: -p 5435
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    container_name: dockerRedis

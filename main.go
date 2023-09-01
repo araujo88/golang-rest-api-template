@@ -2,6 +2,7 @@ package main
 
 import (
 	"golang-rest-api-template/auth"
+	"golang-rest-api-template/cache"
 	"golang-rest-api-template/controllers"
 	"golang-rest-api-template/middleware"
 	"golang-rest-api-template/models"
@@ -38,6 +39,8 @@ import (
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
+	cache.InitRedis()
+
 	//gin.SetMode(gin.ReleaseMode)
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()

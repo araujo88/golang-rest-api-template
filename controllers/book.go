@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"golang-rest-api-template/cache"
 	"golang-rest-api-template/models"
 	"net/http"
 
@@ -31,7 +33,21 @@ func Healthcheck(g *gin.Context) {
 // @Router /books [get]
 func FindBooks(c *gin.Context) {
 	var books []models.Book
+
+	// Try fetching the data from Redis first
+	cachedBooks, err := cache.Rdb.Get(cache.Ctx, "books").Result()
+	if err == nil {
+		json.Unmarshal([]byte(cachedBooks), &books)
+		c.JSON(http.StatusOK, gin.H{"data": books})
+		return
+	}
+
+	// If cache missed, fetch data from database
 	models.DB.Find(&books)
+
+	// Serialize books object and store it in Redis
+	serializedBooks, _ := json.Marshal(books)
+	cache.Rdb.Set(cache.Ctx, "books", serializedBooks, 0)
 
 	c.JSON(http.StatusOK, gin.H{"data": books})
 }
