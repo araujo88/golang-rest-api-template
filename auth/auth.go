@@ -123,15 +123,20 @@ func HashPassword(password string) (string, error) {
 }
 
 func GenerateToken(username string) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
-	claims := &Claims{
-		Username: username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
-		},
+	// The expiration time after which the token will be invalid.
+	expirationTime := time.Now().Add(5 * time.Minute).Unix()
+
+	// Create the JWT claims, which includes the username and expiration time
+	claims := &jwt.StandardClaims{
+		// In JWT, the expiry time is expressed as unix milliseconds
+		ExpiresAt: expirationTime,
+		Issuer:    username,
 	}
 
+	// Declare the token with the algorithm used for signing, and the claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Create the JWT string
 	tokenString, err := token.SignedString(JwtKey)
 
 	if err != nil {
