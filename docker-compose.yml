@@ -18,6 +18,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_PORT: 5435
       JWT_SECRET_KEY: ObL89O3nOSSEj6tbdHako0cXtPErzBUfq8l8o/3KD9g=INSECURE
+      API_SECRET_KEY: cJGZ8L1sDcPezjOy1zacPJZxzZxrPObm2Ggs1U0V+fE=INSECURE
 
   db:
     image: postgres:14.1-alpine

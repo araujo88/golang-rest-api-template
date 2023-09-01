@@ -20,6 +20,11 @@
     "paths": {
         "/": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "do ping",
                 "consumes": [
                     "application/json"
@@ -43,6 +48,11 @@
         },
         "/books": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get a list of all books with optional pagination",
                 "produces": [
                     "application/json"
@@ -83,6 +93,9 @@
                 "security": [
                     {
                         "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtAuth": []
                     }
                 ],
                 "description": "Create a new book with the given input data",
@@ -131,6 +144,11 @@
         },
         "/books/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get details of a book by its ID",
                 "produces": [
                     "application/json"
@@ -164,6 +182,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update the book details for the given ID",
                 "consumes": [
                     "application/json"
@@ -215,6 +238,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete the book with the given ID",
                 "produces": [
                     "application/json"
@@ -250,6 +278,11 @@
         },
         "/login": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Authenticates a user using username and password, returns a JWT token if successful",
                 "consumes": [
                     "application/json"
@@ -302,6 +335,11 @@
         },
         "/register": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Registers a new user with the given username and password",
                 "consumes": [
                     "application/json"
@@ -412,6 +450,11 @@
     },
     "securityDefinitions": {
         "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
+        },
+        "JwtAuth": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

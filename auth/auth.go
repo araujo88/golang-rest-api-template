@@ -33,6 +33,7 @@ var JwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 // @Schemes
 // @Description Authenticates a user using username and password, returns a JWT token if successful
 // @Tags user
+// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param   user     body    models.LoginUser     true        "User login object"
@@ -82,6 +83,7 @@ func LoginHandler(c *gin.Context) {
 // @Schemes http
 // @Description Registers a new user with the given username and password
 // @Tags user
+// @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Param   user     body    models.LoginUser     true        "User registration object"

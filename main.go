@@ -32,9 +32,13 @@ import (
 // @host      localhost:8001
 // @BasePath  /api/v1
 
-// @securityDefinitions.apikey ApiKeyAuth
+// @securityDefinitions.apikey JwtAuth
 // @in header
 // @name Authorization
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name X-API-Key
 
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
@@ -59,14 +63,14 @@ func main() {
 	v1 := r.Group("/api/v1")
 	{
 		v1.GET("/", controllers.Healthcheck)
-		v1.GET("/books", controllers.FindBooks)
-		v1.POST("/books", middleware.AuthenticateJWT(), controllers.CreateBook)
-		v1.GET("/books/:id", controllers.FindBook)
-		v1.PUT("/books/:id", controllers.UpdateBook)
-		v1.DELETE("/books/:id", controllers.DeleteBook)
+		v1.GET("/books", middleware.APIKeyAuthMiddleware(), controllers.FindBooks)
+		v1.POST("/books", middleware.APIKeyAuthMiddleware(), middleware.AuthenticateJWT(), controllers.CreateBook)
+		v1.GET("/books/:id", middleware.APIKeyAuthMiddleware(), controllers.FindBook)
+		v1.PUT("/books/:id", middleware.APIKeyAuthMiddleware(), controllers.UpdateBook)
+		v1.DELETE("/books/:id", middleware.APIKeyAuthMiddleware(), controllers.DeleteBook)
 
-		v1.POST("/login", auth.LoginHandler)
-		v1.POST("/register", auth.RegisterHandler)
+		v1.POST("/login", middleware.APIKeyAuthMiddleware(), auth.LoginHandler)
+		v1.POST("/register", middleware.APIKeyAuthMiddleware(), auth.RegisterHandler)
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 

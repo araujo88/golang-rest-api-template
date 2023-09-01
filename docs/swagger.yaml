@@ -69,6 +69,8 @@ paths:
           description: OK
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: ping example
       tags:
       - example
@@ -95,6 +97,8 @@ paths:
             items:
               $ref: '#/definitions/models.Book'
             type: array
+      security:
+      - ApiKeyAuth: []
       summary: Get all books with pagination
       tags:
       - books
@@ -126,6 +130,7 @@ paths:
             type: string
       security:
       - ApiKeyAuth: []
+      - JwtAuth: []
       summary: Create a new book
       tags:
       - books
@@ -149,6 +154,8 @@ paths:
           description: book not found
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: Delete a book by ID
       tags:
       - books
@@ -171,6 +178,8 @@ paths:
           description: Book not found
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: Find a book by ID
       tags:
       - books
@@ -205,6 +214,8 @@ paths:
           description: book not found
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: Update a book by ID
       tags:
       - books
@@ -240,6 +251,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: Authenticate a user
       tags:
       - user
@@ -270,11 +283,17 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: Register a new user
       tags:
       - user
 securityDefinitions:
   ApiKeyAuth:
+    in: header
+    name: X-API-Key
+    type: apiKey
+  JwtAuth:
     in: header
     name: Authorization
     type: apiKey

@@ -26,6 +26,11 @@ const docTemplate = `{
     "paths": {
         "/": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "do ping",
                 "consumes": [
                     "application/json"
@@ -49,6 +54,11 @@ const docTemplate = `{
         },
         "/books": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get a list of all books with optional pagination",
                 "produces": [
                     "application/json"
@@ -89,6 +99,9 @@ const docTemplate = `{
                 "security": [
                     {
                         "ApiKeyAuth": []
+                    },
+                    {
+                        "JwtAuth": []
                     }
                 ],
                 "description": "Create a new book with the given input data",
@@ -137,6 +150,11 @@ const docTemplate = `{
         },
         "/books/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get details of a book by its ID",
                 "produces": [
                     "application/json"
@@ -170,6 +188,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update the book details for the given ID",
                 "consumes": [
                     "application/json"
@@ -221,6 +244,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete the book with the given ID",
                 "produces": [
                     "application/json"
@@ -256,6 +284,11 @@ const docTemplate = `{
         },
         "/login": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Authenticates a user using username and password, returns a JWT token if successful",
                 "consumes": [
                     "application/json"
@@ -308,6 +341,11 @@ const docTemplate = `{
         },
         "/register": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Registers a new user with the given username and password",
                 "consumes": [
                     "application/json"
@@ -418,6 +456,11 @@ const docTemplate = `{
     },
     "securityDefinitions": {
         "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
+        },
+        "JwtAuth": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
