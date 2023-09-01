@@ -52,6 +52,7 @@ You can set the environment variables in the `.env` file. Here are some importan
 - `POSTGRES_PASSWORD`
 - `POSTGRES_PORT`
 - `JWT_SECRET`
+- `API_SECRET_KEY`
 
 ### API Documentation
 
