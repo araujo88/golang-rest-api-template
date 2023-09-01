@@ -51,7 +51,7 @@ func main() {
 		r.Use(middleware.XssMiddleware())
 	}
 	r.Use(middleware.CorsMiddleware())
-	r.Use(middleware.RateLimitMiddleware(rate.Every(1*time.Minute), 10)) // 10 requests per minute
+	r.Use(middleware.RateLimitMiddleware(rate.Every(1*time.Minute), 60)) // 60 requests per minute
 
 	models.ConnectDatabase()
 

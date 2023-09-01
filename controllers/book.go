@@ -5,6 +5,7 @@ import (
 	"golang-rest-api-template/cache"
 	"golang-rest-api-template/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,29 +26,42 @@ func Healthcheck(g *gin.Context) {
 }
 
 // FindBooks godoc
-// @Summary Get all books
-// @Description Get a list of all books
+// @Summary Get all books with pagination
+// @Description Get a list of all books with optional pagination
 // @Tags books
 // @Produce json
+// @Param offset query int false "Offset for pagination" default(0)
+// @Param limit query int false "Limit for pagination" default(10)
 // @Success 200 {array} models.Book "Successfully retrieved list of books"
 // @Router /books [get]
 func FindBooks(c *gin.Context) {
 	var books []models.Book
 
+	// Get query params
+	offsetQuery := c.DefaultQuery("offset", "0")
+	limitQuery := c.DefaultQuery("limit", "10")
+
+	// Convert query params to integers
+	offset, _ := strconv.Atoi(offsetQuery)
+	limit, _ := strconv.Atoi(limitQuery)
+
+	// Create a cache key based on query params
+	cacheKey := "books_offset_" + offsetQuery + "_limit_" + limitQuery
+
 	// Try fetching the data from Redis first
-	cachedBooks, err := cache.Rdb.Get(cache.Ctx, "books").Result()
+	cachedBooks, err := cache.Rdb.Get(cache.Ctx, cacheKey).Result()
 	if err == nil {
 		json.Unmarshal([]byte(cachedBooks), &books)
 		c.JSON(http.StatusOK, gin.H{"data": books})
 		return
 	}
 
-	// If cache missed, fetch data from database
-	models.DB.Find(&books)
+	// If cache missed, fetch data from the database
+	models.DB.Offset(offset).Limit(limit).Find(&books)
 
 	// Serialize books object and store it in Redis
 	serializedBooks, _ := json.Marshal(books)
-	cache.Rdb.Set(cache.Ctx, "books", serializedBooks, 0)
+	cache.Rdb.Set(cache.Ctx, cacheKey, serializedBooks, 0)
 
 	c.JSON(http.StatusOK, gin.H{"data": books})
 }
