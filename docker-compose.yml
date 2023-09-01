@@ -17,6 +17,7 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: password
       POSTGRES_PORT: 5435
+      JWT_SECRET_KEY: ObL89O3nOSSEj6tbdHako0cXtPErzBUfq8l8o/3KD9g=INSECURE
 
   db:
     image: postgres:14.1-alpine

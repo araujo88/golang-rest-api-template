@@ -9,6 +9,7 @@ import (
 	"golang-rest-api-template/models"
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-var JwtKey = []byte("ObL89O3nOSSEj6tbdHako0cXtPErzBUfq8l8o/3KD9g=INSECURE") // generate new random key for production
+var JwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 // @BasePath /api/v1
 
