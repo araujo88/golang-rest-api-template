@@ -6,12 +6,14 @@ import (
 	"golang-rest-api-template/middleware"
 	"golang-rest-api-template/models"
 	"log"
+	"time"
 
 	docs "golang-rest-api-template/docs"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"golang.org/x/time/rate"
 )
 
 // @title           Swagger Example API
@@ -46,6 +48,7 @@ func main() {
 		r.Use(middleware.XssMiddleware())
 	}
 	r.Use(middleware.CorsMiddleware())
+	r.Use(middleware.RateLimitMiddleware(rate.Every(1*time.Minute), 10)) // 10 requests per minute
 
 	models.ConnectDatabase()
 
