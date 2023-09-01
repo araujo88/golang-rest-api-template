@@ -3,19 +3,19 @@ setup:
 	swag init
 
 build:
+	swag init
 	docker compose up --build
 
 up:
+	swag init
 	docker compose up
 
 down:
 	docker compose down
 
 restart:
+	swag init
 	docker compose restart
-
-rebuild:
-	docker compose up --build
 
 clean:
 	docker stop go-rest-api-template

@@ -8,4 +8,3 @@ COPY . /app
 RUN swag init
 EXPOSE 8001
 CMD go run main.go
-

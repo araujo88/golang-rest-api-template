@@ -9,27 +9,25 @@ import (
 
 // @BasePath /api/v1
 
-// PingExample godoc
+// Healthcheck godoc
 // @Summary ping example
 // @Schemes
 // @Description do ping
 // @Tags example
 // @Accept json
 // @Produce json
-// @Success 200 {string} Helloworld
-// @Router /helloworld [get]
-func Helloworld(g *gin.Context) {
-	g.JSON(http.StatusOK, "helloworld")
+// @Success 200 {string} ok
+// @Router / [get]
+func Healthcheck(g *gin.Context) {
+	g.JSON(http.StatusOK, "ok")
 }
 
 // FindBooks godoc
-// @Summary find books
-// @Schemes
-// @Description fetch all books data
+// @Summary Get all books
+// @Description Get a list of all books
 // @Tags books
-// @Accept json
 // @Produce json
-// @Success 200 {string} book data
+// @Success 200 {array} models.Book "Successfully retrieved list of books"
 // @Router /books [get]
 func FindBooks(c *gin.Context) {
 	var books []models.Book
@@ -39,13 +37,16 @@ func FindBooks(c *gin.Context) {
 }
 
 // CreateBook godoc
-// @Summary create book
-// @Schemes
-// @Description create book entry with title and author
+// @Summary Create a new book
+// @Description Create a new book with the given input data
 // @Tags books
-// @Accept json
-// @Produce json
-// @Success 201 {string} book data
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Param   input     body   models.CreateBook   true   "Create book object"
+// @Success 201 {object} models.Book "Successfully created book"
+// @Failure 400 {string} string "Bad Request"
+// @Failure 401 {string} string "Unauthorized"
 // @Router /books [post]
 func CreateBook(c *gin.Context) {
 	var input models.CreateBook
@@ -63,19 +64,19 @@ func CreateBook(c *gin.Context) {
 }
 
 // FindBook godoc
-// @Summary find book
-// @Schemes
-// @Description find book entry by id
+// @Summary Find a book by ID
+// @Description Get details of a book by its ID
 // @Tags books
-// @Accept json
 // @Produce json
-// @Success 200 {string} book data
+// @Param id path string true "Book ID"
+// @Success 200 {object} models.Book "Successfully retrieved book"
+// @Failure 404 {string} string "Book not found"
 // @Router /books/{id} [get]
 func FindBook(c *gin.Context) {
 	var book models.Book
 
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "book not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
 
@@ -83,20 +84,23 @@ func FindBook(c *gin.Context) {
 }
 
 // UpdateBook godoc
-// @Summary update book
-// @Schemes
-// @Description update book entry by id
+// @Summary Update a book by ID
+// @Description Update the book details for the given ID
 // @Tags books
-// @Accept json
-// @Produce json
-// @Success 200 {string} book data
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Book ID"
+// @Param input body models.UpdateBook true "Update book object"
+// @Success 200 {object} models.Book "Successfully updated book"
+// @Failure 400 {string} string "Bad Request"
+// @Failure 404 {string} string "book not found"
 // @Router /books/{id} [put]
 func UpdateBook(c *gin.Context) {
 	var book models.Book
 	var input models.UpdateBook
 
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "book not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
 
@@ -111,19 +115,19 @@ func UpdateBook(c *gin.Context) {
 }
 
 // DeleteBook godoc
-// @Summary delete book
-// @Schemes
-// @Description delete book entry by id
+// @Summary Delete a book by ID
+// @Description Delete the book with the given ID
 // @Tags books
-// @Accept json
 // @Produce json
-// @Success 204 {string} empty content
+// @Param id path string true "Book ID"
+// @Success 204 {string} string "Successfully deleted book"
+// @Failure 404 {string} string "book not found"
 // @Router /books/{id} [delete]
 func DeleteBook(c *gin.Context) {
 	var book models.Book
 
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "book not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
 
