@@ -3,18 +3,15 @@ setup:
 	swag init
 
 build:
-	swag init
 	docker compose up --build
 
 up:
-	swag init
 	docker compose up
 
 down:
 	docker compose down
 
 restart:
-	swag init
 	docker compose restart
 
 clean:
