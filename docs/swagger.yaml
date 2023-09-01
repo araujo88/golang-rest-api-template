@@ -74,7 +74,18 @@ paths:
       - example
   /books:
     get:
-      description: Get a list of all books
+      description: Get a list of all books with optional pagination
+      parameters:
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      - default: 10
+        description: Limit for pagination
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
@@ -84,7 +95,7 @@ paths:
             items:
               $ref: '#/definitions/models.Book'
             type: array
-      summary: Get all books
+      summary: Get all books with pagination
       tags:
       - books
     post:
