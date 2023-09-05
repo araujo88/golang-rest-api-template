@@ -7,5 +7,5 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest
 COPY . /app
 RUN swag init --dir cmd/server/
 EXPOSE 8001
-RUN CGO_ENABLED=1 go build -o ./bin/server cmd/server/main.go
+RUN CGO_ENABLED=1 go build -o bin/server cmd/server/main.go
 CMD ./bin/server
