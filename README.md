@@ -14,6 +14,65 @@ This repository provides a template for building a RESTful API using Go with fea
 - Redis cache.
 - Dockerized application for easy setup and deployment.
 
+## Folder structure
+
+```
+my-rest-api/
+|-- bin/
+|-- cmd/
+|   |-- server/
+|       |-- main.go
+|-- pkg/
+|   |-- api/
+|       |-- handler.go
+|       |-- router.go
+|   |-- models/
+|       |-- user.go
+|   |-- database/
+|       |-- db.go
+|-- internal/
+|   |-- utils/
+|       |-- helper.go
+|-- web/
+|   |-- static/
+|   |-- templates/
+|-- scripts/
+|-- Dockerfile
+|-- go.mod
+|-- go.sum
+|-- README.md
+```
+
+### Explanation of Directories and Files:
+
+1. **`bin/`**: Contains the compiled binaries.
+
+2. **`cmd/`**: Main applications for this project. The directory name for each application should match the name of the executable you want to generate.
+
+    - **`main.go`**: The entry point for your application.
+
+3. **`pkg/`**: Libraries and packages that are okay to be used by applications from other projects. 
+
+    - **`api/`**: All your API logic.
+        - **`handler.go`**: Your HTTP handlers.
+        - **`router.go`**: Your routes.
+    - **`models/`**: Your data models.
+    - **`database/`**: Database connection and queries.
+
+4. **`internal/`**: Private application and library code. This is code you don't want others importing in their applications or libraries.
+
+    - **`utils/`**: Various utilities that you use internally.
+
+5. **`web/`**: All your web server related things like static files, templates, etc.
+
+6. **`scripts/`**: Various build, install, analysis, etc., scripts for your application.
+
+7. **`Dockerfile`**: If you use Docker, you'll include a Dockerfile here.
+
+8. **`go.mod` and `go.sum`**: The Go module file and its checksum.
+
+9. **`README.md`**: Project documentation and setup guide.
+
 ## Getting Started
 
 ### Prerequisites
