@@ -3,7 +3,7 @@ setup:
 	swag init
 
 build:
-	docker compose up --build
+	docker compose build --no-cache
 
 up:
 	docker compose up
@@ -19,5 +19,6 @@ clean:
 	docker stop dockerPostgres
 	docker rm go-rest-api-template
 	docker rm dockerPostgres
-	docker image rm go-rest-api-template
+	docker rm dockerRedis
+	docker image rm golang-rest-api-template-backend
 	rm -rf .dbdata
