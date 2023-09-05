@@ -17,7 +17,7 @@ This repository provides a template for building a RESTful API using Go with fea
 ## Folder structure
 
 ```
-my-rest-api/
+golang-rest-api-template/
 |-- bin/
 |-- cmd/
 |   |-- server/
@@ -30,12 +30,6 @@ my-rest-api/
 |       |-- user.go
 |   |-- database/
 |       |-- db.go
-|-- internal/
-|   |-- utils/
-|       |-- helper.go
-|-- web/
-|   |-- static/
-|   |-- templates/
 |-- scripts/
 |-- Dockerfile
 |-- go.mod
@@ -47,31 +41,19 @@ my-rest-api/
 
 1. **`bin/`**: Contains the compiled binaries.
 
-2. **`cmd/`**: Main applications for this project. The directory name for each application should match the name of the executable you want to generate.
+2. **`cmd/`**: Main applications for this project. The directory name for each application should match the name of the executable.
 
-    - **`main.go`**: The entry point for your application.
+    - **`main.go`**: The entry point.
 
 3. **`pkg/`**: Libraries and packages that are okay to be used by applications from other projects. 
 
-    - **`api/`**: All your API logic.
-        - **`handler.go`**: Your HTTP handlers.
-        - **`router.go`**: Your routes.
-    - **`models/`**: Your data models.
+    - **`api/`**: API logic.
+        - **`handler.go`**: HTTP handlers.
+        - **`router.go`**: Routes.
+    - **`models/`**: Data models.
     - **`database/`**: Database connection and queries.
 
-4. **`internal/`**: Private application and library code. This is code you don't want others importing in their applications or libraries.
-
-    - **`utils/`**: Various utilities that you use internally.
-
-5. **`web/`**: All your web server related things like static files, templates, etc.
-
-6. **`scripts/`**: Various build, install, analysis, etc., scripts for your application.
-
-7. **`Dockerfile`**: If you use Docker, you'll include a Dockerfile here.
-
-8. **`go.mod` and `go.sum`**: The Go module file and its checksum.
-
-9. **`README.md`**: Project documentation and setup guide.
+4. **`scripts/`**: Various build, install, analysis, etc., scripts.
 
 ## Getting Started
 
@@ -98,7 +80,7 @@ cd golang-rest-api-template
 3. Build and run the Docker containers
 
 ```bash
-make setup && make build
+make setup && make build && make up
 ```
 
 ### Environment Variables
