@@ -1,5 +1,8 @@
 # golang-rest-api-template
 
+[![license](https://img.shields.io/badge/license-MIT-green)](https://raw.githubusercontent.com/araujo88/golang-rest-api-template/main/LICENSE)
+[![build](https://github.com/araujo88/golang-rest-api-template//actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/araujo88/golang-rest-api-template/actions/workflows/go.yml)
+
 ## Overview
 
 This repository provides a template for building a RESTful API using Go with features like JWT Authentication, rate limiting, Swagger documentation, and database operations using GORM. The application uses the Gin Gonic web framework and is containerized using Docker.
