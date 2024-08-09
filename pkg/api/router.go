@@ -1,15 +1,17 @@
 package api
 
 import (
-	"golang-rest-api-template/docs"
 	"golang-rest-api-template/pkg/api/books"
 	"golang-rest-api-template/pkg/auth"
 	"golang-rest-api-template/pkg/middleware"
 	"time"
 
+	docs "golang-rest-api-template/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"golang.org/x/time/rate"
 )
 

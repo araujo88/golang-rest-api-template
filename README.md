@@ -62,7 +62,7 @@ golang-rest-api-template/
 
 ### Prerequisites
 
-- Go 1.15+
+- Go 1.21+
 - Docker
 - Docker Compose
 
