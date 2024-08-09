@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	auth "golang-rest-api-template/pkg/auth"
+	"golang-rest-api-template/pkg/auth"
 	"net/http"
 	"strings"
 

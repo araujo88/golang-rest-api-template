@@ -1,18 +1,15 @@
 package cache
 
 import (
-	"context"
+	"os"
 
 	"github.com/go-redis/redis/v8"
 )
 
-var Rdb *redis.Client
-var Ctx = context.Background()
-
-func InitRedis() {
-	Rdb = redis.NewClient(&redis.Options{
-		Addr:     "redis:6379", // Redis server address
-		Password: "",           // Password, leave empty if none
-		DB:       0,            // Default DB
+func NewRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_HOST") + ":6379", // Redis server address (change to localhost when running local)
+		Password: "",                                // Password, leave empty if none
+		DB:       0,                                 // Default DB
 	})
 }

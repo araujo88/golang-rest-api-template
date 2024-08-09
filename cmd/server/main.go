@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"golang-rest-api-template/pkg/api"
 	"golang-rest-api-template/pkg/cache"
 	"golang-rest-api-template/pkg/database"
@@ -35,13 +36,14 @@ import (
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
-	cache.InitRedis()
-	database.ConnectDatabase()
+	redisClient := cache.NewRedisClient()
+	db := database.NewDatabase()
+	ctx := context.Background()
 
 	//gin.SetMode(gin.ReleaseMode)
 	gin.SetMode(gin.DebugMode)
 
-	r := api.InitRouter()
+	r := api.NewRouter(redisClient, db, &ctx)
 
 	if err := r.Run(":8001"); err != nil {
 		log.Fatal(err)

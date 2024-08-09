@@ -1,9 +1,7 @@
-package books
+package api
 
 import (
 	"encoding/json"
-	"golang-rest-api-template/pkg/cache"
-	"golang-rest-api-template/pkg/database"
 	"golang-rest-api-template/pkg/models"
 	"net/http"
 	"strconv"
@@ -38,6 +36,12 @@ func Healthcheck(g *gin.Context) {
 // @Success 200 {array} models.Book "Successfully retrieved list of books"
 // @Router /books [get]
 func FindBooks(c *gin.Context) {
+	appCtx, exists := c.MustGet("appCtx").(*AppContext)
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
+
 	var books []models.Book
 
 	// Get query params
@@ -61,7 +65,7 @@ func FindBooks(c *gin.Context) {
 	cacheKey := "books_offset_" + offsetQuery + "_limit_" + limitQuery
 
 	// Try fetching the data from Redis first
-	cachedBooks, err := cache.Rdb.Get(cache.Ctx, cacheKey).Result()
+	cachedBooks, err := appCtx.RedisClient.Get(*appCtx.Ctx, cacheKey).Result()
 	if err == nil {
 		err := json.Unmarshal([]byte(cachedBooks), &books)
 		if err != nil {
@@ -73,7 +77,7 @@ func FindBooks(c *gin.Context) {
 	}
 
 	// If cache missed, fetch data from the database
-	database.DB.Offset(offset).Limit(limit).Find(&books)
+	appCtx.DB.Offset(offset).Limit(limit).Find(&books)
 
 	// Serialize books object and store it in Redis
 	serializedBooks, err := json.Marshal(books)
@@ -81,7 +85,7 @@ func FindBooks(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to marshal data"})
 		return
 	}
-	err = cache.Rdb.Set(cache.Ctx, cacheKey, serializedBooks, time.Minute).Err() // Here TTL is set to one hour
+	err = appCtx.RedisClient.Set(*appCtx.Ctx, cacheKey, serializedBooks, time.Minute).Err() // Here TTL is set to one hour
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to set cache"})
 		return
@@ -104,6 +108,11 @@ func FindBooks(c *gin.Context) {
 // @Failure 401 {string} string "Unauthorized"
 // @Router /books [post]
 func CreateBook(c *gin.Context) {
+	appCtx, exists := c.MustGet("appCtx").(*AppContext)
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
 	var input models.CreateBook
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -113,14 +122,14 @@ func CreateBook(c *gin.Context) {
 
 	book := models.Book{Title: input.Title, Author: input.Author}
 
-	database.DB.Create(&book)
+	appCtx.DB.Create(&book)
 
 	// Invalidate cache
 	keysPattern := "books_offset_*"
-	keys, err := cache.Rdb.Keys(cache.Ctx, keysPattern).Result()
+	keys, err := appCtx.RedisClient.Keys(*appCtx.Ctx, keysPattern).Result()
 	if err == nil {
 		for _, key := range keys {
-			cache.Rdb.Del(cache.Ctx, key)
+			appCtx.RedisClient.Del(*appCtx.Ctx, key)
 		}
 	}
 
@@ -138,9 +147,14 @@ func CreateBook(c *gin.Context) {
 // @Failure 404 {string} string "Book not found"
 // @Router /books/{id} [get]
 func FindBook(c *gin.Context) {
+	appCtx, exists := c.MustGet("appCtx").(*AppContext)
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
 	var book models.Book
 
-	if err := database.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := appCtx.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
@@ -162,10 +176,15 @@ func FindBook(c *gin.Context) {
 // @Failure 404 {string} string "book not found"
 // @Router /books/{id} [put]
 func UpdateBook(c *gin.Context) {
+	appCtx, exists := c.MustGet("appCtx").(*AppContext)
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
 	var book models.Book
 	var input models.UpdateBook
 
-	if err := database.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := appCtx.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
@@ -175,7 +194,7 @@ func UpdateBook(c *gin.Context) {
 		return
 	}
 
-	database.DB.Model(&book).Updates(models.Book{Title: input.Title, Author: input.Author})
+	appCtx.DB.Model(&book).Updates(models.Book{Title: input.Title, Author: input.Author})
 
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
@@ -191,14 +210,19 @@ func UpdateBook(c *gin.Context) {
 // @Failure 404 {string} string "book not found"
 // @Router /books/{id} [delete]
 func DeleteBook(c *gin.Context) {
+	appCtx, exists := c.MustGet("appCtx").(*AppContext)
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
 	var book models.Book
 
-	if err := database.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := appCtx.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
 
-	database.DB.Delete(&book)
+	appCtx.DB.Delete(&book)
 
 	c.JSON(http.StatusNoContent, gin.H{"data": true})
 }

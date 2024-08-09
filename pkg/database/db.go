@@ -12,9 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func ConnectDatabase() {
+func NewDatabase() *gorm.DB {
 	var database *gorm.DB
 	var err error
 
@@ -38,5 +36,5 @@ func ConnectDatabase() {
 	database.AutoMigrate(&models.Book{})
 	database.AutoMigrate(&models.User{})
 
-	DB = database
+	return database
 }
