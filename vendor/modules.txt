@@ -71,8 +71,8 @@ github.com/gabriel-vasile/mimetype/internal/magic
 # github.com/gin-contrib/cors v1.7.2
 ## explicit; go 1.18
 github.com/gin-contrib/cors
-# github.com/gin-contrib/secure v0.0.1
-## explicit; go 1.13
+# github.com/gin-contrib/secure v1.1.0
+## explicit; go 1.18
 github.com/gin-contrib/secure
 # github.com/gin-contrib/sse v0.1.0
 ## explicit; go 1.12
