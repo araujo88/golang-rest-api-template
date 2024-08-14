@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.uber.org/zap"
 
 	"golang.org/x/time/rate"
 )
@@ -39,13 +41,14 @@ func ContextMiddleware(appCtx *AppContext) gin.HandlerFunc {
 	}
 }
 
-func NewRouter(db database.DBInterface, redisClient cache.CacheInterface, ctx *context.Context) *gin.Engine {
+func NewRouter(logger *zap.Logger, mongoCollection *mongo.Collection, db database.DBInterface, redisClient cache.CacheInterface, ctx *context.Context) *gin.Engine {
 	appCtx := NewAppContext(db, redisClient, ctx)
 
 	r := gin.Default()
 	r.Use(ContextMiddleware(appCtx))
 
-	r.Use(gin.Logger())
+	//r.Use(gin.Logger())
+	r.Use(middleware.Logger(logger, mongoCollection))
 	if gin.Mode() == gin.ReleaseMode {
 		r.Use(middleware.Security())
 		r.Use(middleware.Xss())

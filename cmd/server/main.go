@@ -7,6 +7,8 @@ import (
 	"golang-rest-api-template/pkg/database"
 	"log"
 
+	"go.uber.org/zap"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,12 +40,15 @@ import (
 func main() {
 	redisClient := cache.NewRedisClient()
 	db := database.NewDatabase()
+	mongo := database.SetupMongoDB()
 	ctx := context.Background()
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
 
 	//gin.SetMode(gin.ReleaseMode)
 	gin.SetMode(gin.DebugMode)
 
-	r := api.NewRouter(db, redisClient, &ctx)
+	r := api.NewRouter(logger, mongo, db, redisClient, &ctx)
 
 	if err := r.Run(":8001"); err != nil {
 		log.Fatal(err)

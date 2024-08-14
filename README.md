@@ -15,6 +15,7 @@ This repository provides a template for building a RESTful API using Go with fea
 - Swagger Documentation.
 - PostgreSQL database integration using GORM.
 - Redis cache.
+- MongoDB for logging storage.
 - Dockerized application for easy setup and deployment.
 
 ## Folder structure
