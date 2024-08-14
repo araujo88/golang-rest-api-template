@@ -43,7 +43,7 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	gin.SetMode(gin.DebugMode)
 
-	r := api.NewRouter(redisClient, db, &ctx)
+	r := api.NewRouter(db, redisClient, &ctx)
 
 	if err := r.Run(":8001"); err != nil {
 		log.Fatal(err)

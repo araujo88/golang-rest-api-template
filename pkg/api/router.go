@@ -2,29 +2,29 @@ package api
 
 import (
 	"context"
+	"golang-rest-api-template/pkg/cache"
+	"golang-rest-api-template/pkg/database"
 	"golang-rest-api-template/pkg/middleware"
 	"time"
 
 	docs "golang-rest-api-template/docs"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"gorm.io/gorm"
 
 	"golang.org/x/time/rate"
 )
 
 // AppContext holds shared resources like database and Redis client
 type AppContext struct {
-	DB          *gorm.DB
-	RedisClient *redis.Client
+	DB          database.DBInterface
+	RedisClient cache.CacheInterface
 	Ctx         *context.Context
 }
 
 // NewAppContext creates a new AppContext
-func NewAppContext(db *gorm.DB, redisClient *redis.Client, ctx *context.Context) *AppContext {
+func NewAppContext(db database.DBInterface, redisClient cache.CacheInterface, ctx *context.Context) *AppContext {
 	return &AppContext{
 		DB:          db,
 		RedisClient: redisClient,
@@ -39,7 +39,7 @@ func ContextMiddleware(appCtx *AppContext) gin.HandlerFunc {
 	}
 }
 
-func NewRouter(redisClient *redis.Client, db *gorm.DB, ctx *context.Context) *gin.Engine {
+func NewRouter(db database.DBInterface, redisClient cache.CacheInterface, ctx *context.Context) *gin.Engine {
 	appCtx := NewAppContext(db, redisClient, ctx)
 
 	r := gin.Default()
