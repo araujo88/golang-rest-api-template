@@ -1,6 +1,6 @@
 # Secure
 
-[![Build Status](https://travis-ci.org/gin-contrib/secure.svg)](https://travis-ci.org/gin-contrib/secure)
+[![Run Tests](https://github.com/gin-contrib/secure/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/gin-contrib/secure/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/gin-contrib/secure/branch/master/graph/badge.svg)](https://codecov.io/gh/gin-contrib/secure)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gin-contrib/secure)](https://goreportcard.com/report/github.com/gin-contrib/secure)
 [![GoDoc](https://godoc.org/github.com/gin-contrib/secure?status.svg)](https://godoc.org/github.com/gin-contrib/secure)
@@ -36,6 +36,8 @@ func DefaultConfig() Config {
 package main
 
 import (
+	"log"
+
 	"github.com/gin-contrib/secure"
 	"github.com/gin-gonic/gin"
 )
@@ -63,6 +65,8 @@ func main() {
 	})
 
 	// Listen and Server in 0.0.0.0:8080
-	router.Run()
+	if err := router.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
 ```
