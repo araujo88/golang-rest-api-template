@@ -21,42 +21,54 @@ This repository provides a template for building a RESTful API using Go with fea
 
 ```
 golang-rest-api-template/
-|-- bin/
-|-- cmd/
-|   |-- server/
-|       |-- main.go
-|-- pkg/
-|   |-- api/
-|       |-- handler.go
-|       |-- router.go
-|   |-- models/
-|       |-- user.go
-|   |-- database/
-|       |-- db.go
-|-- scripts/
-|-- Dockerfile
-|-- go.mod
-|-- go.sum
-|-- README.md
+├── bin
+│  └── server
+├── cmd
+│  └── server
+│     └── main.go
+├── docker-compose.yml
+├── Dockerfile
+├── docs
+│  ├── docs.go
+│  ├── swagger.json
+│  └── swagger.yaml
+├── go.mod
+├── go.sum
+├── LICENSE
+├── Makefile
+├── pkg
+│  ├── api
+│  │  ├── books.go
+│  │  ├── books_test.go
+│  │  ├── router.go
+│  │  └── user.go
+│  ├── auth
+│  │  ├── auth.go
+│  │  └── auth_test.go
+│  ├── cache
+│  │  ├── cache.go
+│  │  ├── cache_mock.go
+│  │  └── cache_test.go
+│  ├── database
+│  │  ├── db.go
+│  │  ├── db_mock.go
+│  │  └── db_test.go
+│  ├── middleware
+│  │  ├── api_key.go
+│  │  ├── authenticateJWT.go
+│  │  ├── cors.go
+│  │  ├── rate_limit.go
+│  │  ├── security.go
+│  │  └── xss.go
+│  └── models
+│     ├── book.go
+│     └── user.go
+├── README.md
+├── scripts
+│  ├── generate_key
+│  └── generate_key.go
+└── vendor
 ```
-
-### Explanation of Directories and Files:
-
-1. **`bin/`**: Contains the compiled binaries.
-
-2. **`cmd/`**: Main applications for this project. The directory name for each application should match the name of the executable.
-
-    - **`main.go`**: The entry point.
-
-3. **`pkg/`**: Libraries and packages that are okay to be used by applications from other projects. 
-
-    - **`api/`**: API logic.
-        - **`handler.go`**: HTTP handlers.
-        - **`router.go`**: Routes.
-    - **`models/`**: Data models.
-    - **`database/`**: Database connection and queries.
-
-4. **`scripts/`**: Various build, install, analysis, etc., scripts.
 
 ## Getting Started
 
@@ -132,5 +144,5 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## TODOs
 
- - Unit tests
- - e2e tests
+- Unit tests
+- e2e tests
