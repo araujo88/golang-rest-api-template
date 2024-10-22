@@ -40,6 +40,7 @@ import (
 func main() {
 	redisClient := cache.NewRedisClient()
 	db := database.NewDatabase()
+	dbWrapper := &database.GormDatabase{DB: db}
 	mongo := database.SetupMongoDB()
 	ctx := context.Background()
 	logger, _ := zap.NewProduction()
@@ -48,7 +49,7 @@ func main() {
 	//gin.SetMode(gin.ReleaseMode)
 	gin.SetMode(gin.DebugMode)
 
-	r := api.NewRouter(logger, mongo, db, redisClient, &ctx)
+	r := api.NewRouter(logger, mongo, dbWrapper, redisClient, &ctx)
 
 	if err := r.Run(":8001"); err != nil {
 		log.Fatal(err)

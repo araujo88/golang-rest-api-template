@@ -60,7 +60,7 @@ func (r *userRepository) LoginHandler(c *gin.Context) {
 	}
 
 	// Fetch the user from the database
-	if err := r.DB.Where("username = ?", incomingUser.Username).First(&dbUser).Error; err != nil {
+	if err := r.DB.Where("username = ?", incomingUser.Username).First(&dbUser).Error(); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		} else {

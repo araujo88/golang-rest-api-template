@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"golang-rest-api-template/pkg/cache"
@@ -94,4 +95,176 @@ func TestFindBooks(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "Book One")
+}
+
+func TestCreateBook(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockDB := database.NewMockDatabase(ctrl)
+	mockCache := cache.NewMockCache(ctrl)
+	ctx := context.Background()
+
+	repo := NewBookRepository(mockDB, mockCache, &ctx)
+
+	// Set up Gin
+	gin.SetMode(gin.TestMode)
+	r := gin.Default()
+	r.POST("/books", func(c *gin.Context) {
+		// Set the appCtx in the Gin context
+		c.Set("appCtx", repo)
+		repo.CreateBook(c)
+	})
+
+	// Example data for the test
+	inputBook := models.CreateBook{Title: "New Book", Author: "New Author"}
+	requestBody, err := json.Marshal(inputBook)
+	if err != nil {
+		t.Fatalf("Failed to marshal input book data: %v", err)
+	}
+
+	// Set up database mock to simulate successful book creation
+	mockDB.EXPECT().Create(gomock.Any()).DoAndReturn(func(book *models.Book) *gorm.DB {
+		// Normally, you might simulate setting an ID or other fields modified by the DB
+		return &gorm.DB{Error: nil}
+	})
+
+	// Set up cache mock to simulate key retrieval and deletion
+	keyPattern := "books_offset_*"
+	mockCache.EXPECT().Keys(ctx, keyPattern).Return(redis.NewStringSliceResult([]string{"books_offset_0_limit_10"}, nil))
+	mockCache.EXPECT().Del(ctx, "books_offset_0_limit_10").Return(redis.NewIntResult(1, nil))
+
+	w := httptest.NewRecorder()
+	req, err := http.NewRequest("POST", "/books", bytes.NewBuffer(requestBody))
+	if err != nil {
+		t.Fatalf("Failed to create the HTTP request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	// Serve the HTTP request
+	r.ServeHTTP(w, req)
+
+	// Assertions to check the response
+	assert.Equal(t, http.StatusCreated, w.Code, "Expected HTTP status code 201")
+	assert.Contains(t, w.Body.String(), "New Book", "Response body should contain the book title")
+}
+
+func TestFindBook(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockDB := database.NewMockDatabase(ctrl)
+	ctx := context.Background()
+	repo := NewBookRepository(mockDB, nil, &ctx)
+
+	// Set up Gin
+	gin.SetMode(gin.TestMode)
+	r := gin.Default()
+	r.GET("/book/:id", repo.FindBook)
+
+	// Prepare test data
+	expectedBook := models.Book{
+		ID:     1,
+		Title:  "Effective Go",
+		Author: "Robert Griesemer",
+	}
+
+	// Mock expectations
+
+	// Mock the Where method
+	mockDB.EXPECT().
+		Where("id = ?", "1").
+		DoAndReturn(func(query interface{}, args ...interface{}) database.Database {
+			// Return mockDB to allow method chaining
+			return mockDB
+		}).Times(1)
+
+	// Mock the First method
+	mockDB.EXPECT().
+		First(gomock.Any()).
+		DoAndReturn(func(dest interface{}, conds ...interface{}) database.Database {
+			if b, ok := dest.(*models.Book); ok {
+				*b = expectedBook
+			}
+			return mockDB
+		}).Times(1)
+
+	// Mock the Error method or field access
+	mockDB.EXPECT().
+		Error().
+		Return(nil).
+		Times(1)
+
+	// Perform the request
+	w := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/book/1", nil)
+	r.ServeHTTP(w, req)
+
+	// Assert response
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	var response struct {
+		Status  int         `json:"status"`
+		Message string      `json:"message"`
+		Data    models.Book `json:"data"`
+	}
+
+	err := json.NewDecoder(w.Body).Decode(&response)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedBook.ID, response.Data.ID)
+	assert.Equal(t, expectedBook.Title, response.Data.Title)
+	assert.Equal(t, expectedBook.Author, response.Data.Author)
+}
+
+func TestDeleteBook(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Create mock for the database
+	mockDB := database.NewMockDatabase(ctrl)
+	ctx := context.Background()
+	repo := NewBookRepository(mockDB, nil, &ctx)
+
+	// Set up Gin for testing
+	gin.SetMode(gin.TestMode)
+	r := gin.Default()
+	r.DELETE("/book/:id", repo.DeleteBook)
+
+	// Prepare the book data
+	existingBook := models.Book{
+		ID:     1,
+		Title:  "Test Book",
+		Author: "Test Author",
+	}
+
+	// Mock Where to return the existingBook for chaining
+	mockDB.EXPECT().
+		Where("id = ?", "1").
+		Return(mockDB).Times(1)
+
+	// Mock First to load the existingBook and return mockDB
+	mockDB.EXPECT().
+		First(gomock.Any()).
+		DoAndReturn(func(dest interface{}, conds ...interface{}) database.Database {
+			if b, ok := dest.(*models.Book); ok {
+				*b = existingBook
+			}
+			return mockDB
+		}).Times(1)
+
+	// Mock Delete method
+	mockDB.EXPECT().
+		Delete(&existingBook).
+		Return(&gorm.DB{Error: nil}).Times(1)
+
+	// Mock Error method to return nil
+	mockDB.EXPECT().Error().Return(nil).AnyTimes()
+
+	// Perform the DELETE request
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodDelete, "/book/1", nil)
+	r.ServeHTTP(w, req)
+
+	// Assert the response
+	assert.Equal(t, http.StatusNoContent, w.Code)
 }

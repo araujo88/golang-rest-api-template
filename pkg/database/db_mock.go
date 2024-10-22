@@ -67,6 +67,20 @@ func (mr *MockDatabaseMockRecorder) Delete(arg0 interface{}, arg1 ...interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDatabase)(nil).Delete), varargs...)
 }
 
+// Error mocks base method.
+func (m *MockDatabase) Error() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Error")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Error indicates an expected call of Error.
+func (mr *MockDatabaseMockRecorder) Error() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Error", reflect.TypeOf((*MockDatabase)(nil).Error))
+}
+
 // Find mocks base method.
 func (m *MockDatabase) Find(arg0 interface{}, arg1 ...interface{}) *gorm.DB {
 	m.ctrl.T.Helper()
@@ -87,14 +101,14 @@ func (mr *MockDatabaseMockRecorder) Find(arg0 interface{}, arg1 ...interface{}) 
 }
 
 // First mocks base method.
-func (m *MockDatabase) First(dest interface{}, conds ...interface{}) *gorm.DB {
+func (m *MockDatabase) First(dest interface{}, conds ...interface{}) Database {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{dest}
 	for _, a := range conds {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "First", varargs...)
-	ret0, _ := ret[0].(*gorm.DB)
+	ret0, _ := ret[0].(Database)
 	return ret0
 }
 
@@ -147,6 +161,20 @@ func (mr *MockDatabaseMockRecorder) Offset(offset interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Offset", reflect.TypeOf((*MockDatabase)(nil).Offset), offset)
 }
 
+// Order mocks base method.
+func (m *MockDatabase) Order(value interface{}) *gorm.DB {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Order", value)
+	ret0, _ := ret[0].(*gorm.DB)
+	return ret0
+}
+
+// Order indicates an expected call of Order.
+func (mr *MockDatabaseMockRecorder) Order(value interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Order", reflect.TypeOf((*MockDatabase)(nil).Order), value)
+}
+
 // Updates mocks base method.
 func (m *MockDatabase) Updates(arg0 interface{}) *gorm.DB {
 	m.ctrl.T.Helper()
@@ -162,14 +190,14 @@ func (mr *MockDatabaseMockRecorder) Updates(arg0 interface{}) *gomock.Call {
 }
 
 // Where mocks base method.
-func (m *MockDatabase) Where(query interface{}, args ...interface{}) *gorm.DB {
+func (m *MockDatabase) Where(query interface{}, args ...interface{}) Database {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{query}
 	for _, a := range args {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "Where", varargs...)
-	ret0, _ := ret[0].(*gorm.DB)
+	ret0, _ := ret[0].(Database)
 	return ret0
 }
 

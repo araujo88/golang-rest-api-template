@@ -171,7 +171,7 @@ func (r *bookRepository) CreateBook(c *gin.Context) {
 func (r *bookRepository) FindBook(c *gin.Context) {
 	var book models.Book
 
-	if err := r.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := r.DB.Where("id = ?", c.Param("id")).First(&book).Error(); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
@@ -196,7 +196,7 @@ func (r *bookRepository) UpdateBook(c *gin.Context) {
 	var book models.Book
 	var input models.UpdateBook
 
-	if err := r.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := r.DB.Where("id = ?", c.Param("id")).First(&book).Error(); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
@@ -222,19 +222,14 @@ func (r *bookRepository) UpdateBook(c *gin.Context) {
 // @Failure 404 {string} string "book not found"
 // @Router /books/{id} [delete]
 func (r *bookRepository) DeleteBook(c *gin.Context) {
-	appCtx, exists := c.MustGet("appCtx").(*bookRepository)
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
-		return
-	}
 	var book models.Book
 
-	if err := appCtx.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := r.DB.Where("id = ?", c.Param("id")).First(&book).Error(); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "book not found"})
 		return
 	}
 
-	appCtx.DB.Delete(&book)
+	r.DB.Delete(&book)
 
 	c.JSON(http.StatusNoContent, gin.H{"data": true})
 }
