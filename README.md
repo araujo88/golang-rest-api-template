@@ -143,6 +143,78 @@ curl -H "Authorization: Bearer <YOUR_TOKEN>" http://localhost:8001/api/v1/books
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## TODOs
+## End-to-End (E2E) Tests
 
-- Unit tests
+This project contains end-to-end (E2E) tests to verify the functionality of the API. The tests are written in Python using the `pytest` framework.
+
+### Prerequisites
+
+Before running the tests, ensure you have the following:
+
+- Python 3.x installed
+- `pip` (Python package manager)
+- The API service running locally or on a staging server
+- API key available
+
+### Setup
+
+#### 1. Create a virtual environment (optional but recommended):
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+#### 2. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+The main dependency is `requests`, but you may need to include it in your `requirements.txt` file if it's not already listed.
+
+##@# 3. Set up the environment variables:
+
+You need to set the `BASE_URL` and `API_KEY` as environment variables before running the tests.
+
+For a **local** API service:
+
+```bash
+export BASE_URL=http://localhost:8001/api/v1
+export API_KEY=your-api-key-here
+```
+
+For a **staging** server:
+
+```bash
+export BASE_URL=https://staging-server-url.com/api/v1
+export API_KEY=your-api-key-here
+```
+
+On **Windows**, you can use:
+
+```bash
+set BASE_URL=http://localhost:8001/api/v1
+set API_KEY=your-api-key-here
+```
+
+#### 4. Run the tests:
+
+Once the environment variables are set, you can run the tests using `pytest`:
+
+```bash
+pytest test_e2e.py
+```
+
+### Test Structure
+
+The tests will perform the following actions:
+
+1. Register a new user and obtain a JWT token.
+2. Create a new book in the system.
+3. Retrieve all books and verify the created book is present.
+4. Retrieve a specific book by its ID.
+5. Update the book's details.
+6. Delete the book and verify it is no longer accessible.
+
+Each test includes assertions to ensure that the API behaves as expected.

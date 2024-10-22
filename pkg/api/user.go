@@ -94,7 +94,7 @@ func (r *userRepository) LoginHandler(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param   user     body    models.LoginUser     true        "User registration object"
-// @Success 200 {string} string	"Successfully registered"
+// @Success 201 {string} string	"Successfully registered"
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
 // @Router /register [post]
@@ -122,5 +122,5 @@ func (r *userRepository) RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Registration successful"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Registration successful"})
 }
