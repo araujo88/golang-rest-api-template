@@ -8,10 +8,14 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - "**/*.md"
+      - "CODEOWNERS"
+      - "Makefile"
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - "**/*.md"
+      - "CODEOWNERS"
+      - "Makefile"
 
 jobs:
 
@@ -29,4 +33,4 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: go test -v ./...
+      run: go test -v ./... -race -cover
