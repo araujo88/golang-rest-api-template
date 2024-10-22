@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"golang-rest-api-template/pkg/auth"
+	"golang-rest-api-template/pkg/database"
 	"golang-rest-api-template/pkg/models"
 	"net/http"
 
@@ -12,6 +14,24 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
+
+type UserRepository interface {
+	LoginHandler(c *gin.Context)
+	RegisterHandler(c *gin.Context)
+}
+
+// bookRepository holds shared resources like database and Redis client
+type userRepository struct {
+	DB  database.Database
+	Ctx *context.Context
+}
+
+func NewUserRepository(db database.Database, ctx *context.Context) *userRepository {
+	return &userRepository{
+		DB:  db,
+		Ctx: ctx,
+	}
+}
 
 // @BasePath /api/v1
 
@@ -29,12 +49,7 @@ import (
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Router /login [post]
-func LoginHandler(c *gin.Context) {
-	appCtx, exists := c.MustGet("appCtx").(*AppContext)
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
-		return
-	}
+func (r *userRepository) LoginHandler(c *gin.Context) {
 	var incomingUser models.User
 	var dbUser models.User
 
@@ -45,7 +60,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// Fetch the user from the database
-	if err := appCtx.DB.Where("username = ?", incomingUser.Username).First(&dbUser).Error; err != nil {
+	if err := r.DB.Where("username = ?", incomingUser.Username).First(&dbUser).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		} else {
@@ -83,12 +98,7 @@ func LoginHandler(c *gin.Context) {
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
 // @Router /register [post]
-func RegisterHandler(c *gin.Context) {
-	appCtx, exists := c.MustGet("appCtx").(*AppContext)
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
-		return
-	}
+func (r *userRepository) RegisterHandler(c *gin.Context) {
 	var user models.LoginUser
 
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -107,7 +117,7 @@ func RegisterHandler(c *gin.Context) {
 	newUser := models.User{Username: user.Username, Password: hashedPassword}
 
 	// Save the user to the database
-	if err := appCtx.DB.Create(&newUser).Error; err != nil {
+	if err := r.DB.Create(&newUser).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Could not save user: %v", err)})
 		return
 	}

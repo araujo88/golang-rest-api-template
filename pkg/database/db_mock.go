@@ -147,6 +147,20 @@ func (mr *MockDatabaseMockRecorder) Offset(offset interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Offset", reflect.TypeOf((*MockDatabase)(nil).Offset), offset)
 }
 
+// Updates mocks base method.
+func (m *MockDatabase) Updates(arg0 interface{}) *gorm.DB {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Updates", arg0)
+	ret0, _ := ret[0].(*gorm.DB)
+	return ret0
+}
+
+// Updates indicates an expected call of Updates.
+func (mr *MockDatabaseMockRecorder) Updates(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Updates", reflect.TypeOf((*MockDatabase)(nil).Updates), arg0)
+}
+
 // Where mocks base method.
 func (m *MockDatabase) Where(query interface{}, args ...interface{}) *gorm.DB {
 	m.ctrl.T.Helper()

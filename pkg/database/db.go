@@ -21,6 +21,7 @@ type Database interface {
 	Delete(interface{}, ...interface{}) *gorm.DB
 	Model(model interface{}) *gorm.DB
 	First(dest interface{}, conds ...interface{}) *gorm.DB
+	Updates(interface{}) *gorm.DB
 }
 
 func NewDatabase() *gorm.DB {

@@ -18,34 +18,19 @@ import (
 	"golang.org/x/time/rate"
 )
 
-// AppContext holds shared resources like database and Redis client
-type AppContext struct {
-	DB          database.DBInterface
-	RedisClient cache.CacheInterface
-	Ctx         *context.Context
-}
-
-// NewAppContext creates a new AppContext
-func NewAppContext(db database.DBInterface, redisClient cache.CacheInterface, ctx *context.Context) *AppContext {
-	return &AppContext{
-		DB:          db,
-		RedisClient: redisClient,
-		Ctx:         ctx,
-	}
-}
-
-func ContextMiddleware(appCtx *AppContext) gin.HandlerFunc {
+func ContextMiddleware(bookRepository BookRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set("appCtx", appCtx)
+		c.Set("appCtx", bookRepository)
 		c.Next()
 	}
 }
 
-func NewRouter(logger *zap.Logger, mongoCollection *mongo.Collection, db database.DBInterface, redisClient cache.CacheInterface, ctx *context.Context) *gin.Engine {
-	appCtx := NewAppContext(db, redisClient, ctx)
+func NewRouter(logger *zap.Logger, mongoCollection *mongo.Collection, db database.Database, redisClient cache.Cache, ctx *context.Context) *gin.Engine {
+	bookRepository := NewBookRepository(db, redisClient, ctx)
+	userRepository := NewUserRepository(db, ctx)
 
 	r := gin.Default()
-	r.Use(ContextMiddleware(appCtx))
+	r.Use(ContextMiddleware(bookRepository))
 
 	//r.Use(gin.Logger())
 	r.Use(middleware.Logger(logger, mongoCollection))
@@ -59,15 +44,15 @@ func NewRouter(logger *zap.Logger, mongoCollection *mongo.Collection, db databas
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
-		v1.GET("/", Healthcheck)
-		v1.GET("/books", middleware.APIKeyAuth(), FindBooks)
-		v1.POST("/books", middleware.APIKeyAuth(), middleware.JWTAuth(), CreateBook)
-		v1.GET("/books/:id", middleware.APIKeyAuth(), FindBook)
-		v1.PUT("/books/:id", middleware.APIKeyAuth(), UpdateBook)
-		v1.DELETE("/books/:id", middleware.APIKeyAuth(), DeleteBook)
+		v1.GET("/", bookRepository.Healthcheck)
+		v1.GET("/books", middleware.APIKeyAuth(), bookRepository.FindBooks)
+		v1.POST("/books", middleware.APIKeyAuth(), middleware.JWTAuth(), bookRepository.CreateBook)
+		v1.GET("/books/:id", middleware.APIKeyAuth(), bookRepository.FindBook)
+		v1.PUT("/books/:id", middleware.APIKeyAuth(), bookRepository.UpdateBook)
+		v1.DELETE("/books/:id", middleware.APIKeyAuth(), bookRepository.DeleteBook)
 
-		v1.POST("/login", middleware.APIKeyAuth(), LoginHandler)
-		v1.POST("/register", middleware.APIKeyAuth(), RegisterHandler)
+		v1.POST("/login", middleware.APIKeyAuth(), userRepository.LoginHandler)
+		v1.POST("/register", middleware.APIKeyAuth(), userRepository.RegisterHandler)
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
