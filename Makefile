@@ -5,7 +5,7 @@ setup:
 	go get -u github.com/swaggo/gin-swagger
 	go get -u github.com/swaggo/files
 
-build:
+build-docker:
 	docker compose build --no-cache
 
 run-local:
@@ -30,6 +30,12 @@ down:
 
 restart:
 	docker compose restart
+
+build:
+	go build -v ./...
+
+test:
+	go test -v ./... -race -cover
 
 clean:
 	docker stop go-rest-api-template
