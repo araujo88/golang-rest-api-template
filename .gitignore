@@ -15,3 +15,7 @@
 # vendor/
 __pycache__
 .pytest_cache
+.env
+.venv
+env
+venv

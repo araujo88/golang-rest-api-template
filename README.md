@@ -173,7 +173,7 @@ pip install -r requirements.txt
 
 The main dependency is `requests`, but you may need to include it in your `requirements.txt` file if it's not already listed.
 
-##@# 3. Set up the environment variables:
+#### 3. Set up the environment variables:
 
 You need to set the `BASE_URL` and `API_KEY` as environment variables before running the tests.
 
