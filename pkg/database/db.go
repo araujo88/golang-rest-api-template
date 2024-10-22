@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type DBInterface interface {
+type Database interface {
 	Offset(offset int) *gorm.DB
 	Limit(limit int) *gorm.DB
 	Find(interface{}, ...interface{}) *gorm.DB
@@ -20,6 +20,7 @@ type DBInterface interface {
 	Where(query interface{}, args ...interface{}) *gorm.DB
 	Delete(interface{}, ...interface{}) *gorm.DB
 	Model(model interface{}) *gorm.DB
+	First(dest interface{}, conds ...interface{}) *gorm.DB
 }
 
 func NewDatabase() *gorm.DB {
