@@ -13,6 +13,7 @@ func Cors() gin.HandlerFunc {
 		"http://localhost",
 		"http://localhost:8001"}
 	config.AddAllowHeaders("Authorization", "X-API-Key", "X-Request-Id")
+	config.AddExposeHeaders("X-Request-Id")
 	config.AllowCredentials = true
 	return cors.New(config)
 }

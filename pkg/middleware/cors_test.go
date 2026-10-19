@@ -18,7 +18,7 @@ func TestCredentialedCORSPreflightAllowsAPIHeadersAndMethods(t *testing.T) {
 	request := httptest.NewRequest(http.MethodOptions, "/api/v1/books/1", nil)
 	request.Header.Set("Origin", "http://localhost:8001")
 	request.Header.Set("Access-Control-Request-Method", http.MethodPatch)
-	request.Header.Set("Access-Control-Request-Headers", "authorization,x-api-key,content-type")
+	request.Header.Set("Access-Control-Request-Headers", "authorization,x-api-key,x-request-id,content-type")
 	response := httptest.NewRecorder()
 	router.ServeHTTP(response, request)
 
@@ -36,9 +36,25 @@ func TestCredentialedCORSPreflightAllowsAPIHeadersAndMethods(t *testing.T) {
 			t.Errorf("allowed methods %q omit %s", got, method)
 		}
 	}
-	for _, header := range []string{"authorization", "x-api-key", "content-type"} {
+	for _, header := range []string{"authorization", "x-api-key", "x-request-id", "content-type"} {
 		if got := strings.ToLower(response.Header().Get("Access-Control-Allow-Headers")); !strings.Contains(got, header) {
 			t.Errorf("allowed headers %q omit %s", got, header)
 		}
+	}
+}
+
+func TestCORSExposesRequestIDHeader(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	router := gin.New()
+	router.Use(Cors())
+	router.GET("/api/v1/books", func(c *gin.Context) { c.Status(http.StatusNoContent) })
+
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/books", nil)
+	request.Header.Set("Origin", "http://localhost:8001")
+	response := httptest.NewRecorder()
+	router.ServeHTTP(response, request)
+
+	if got := strings.ToLower(response.Header().Get("Access-Control-Expose-Headers")); !strings.Contains(got, "x-request-id") {
+		t.Errorf("exposed headers %q omit x-request-id", got)
 	}
 }
